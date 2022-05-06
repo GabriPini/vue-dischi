@@ -2,8 +2,10 @@
  <main class="ps-5 pe-5">
   <section class="container p-5">
    <div v-if="visualize" class="row p-5">
+       <Select :albumList="albumList" @Change="filterAlbumList" />
+      
     <div
-     v-for="(element, index) in albumList"
+     v-for="(element, index) in filteredAlbumList"
      :key="index"
      class="col-2 m-3 my_album-box"
     >
@@ -28,19 +30,39 @@
 <script>
 import axios from "axios";
 import AlbumBox from "@/components/AlbumComponent.vue";
+import Select from '@/components/SelectComponent.vue';
 export default {
  name: "MainComponent",
 
  components: {
-  AlbumBox,
+     AlbumBox,
+     Select,
+     
  },
 
  data: function () {
   return {
    albumList: [],
+   filteredAlbumList : [],
    visualize: false,
-  };
+  }
  },
+ methods : {
+    filterAlbumList(filter){
+    
+      if (filter == 'All'){
+        
+        this.filteredAlbumList = [...this.albumList]
+      } else {
+        this.filteredAlbumList = this.albumList.filter((element) => element.genre == filter)
+        
+      }
+    },
+    
+
+    
+  },
+
  created: function () {
   axios
    .get("https://flynn.boolean.careers/exercises/api/array/music")
